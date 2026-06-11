@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>World Cup Pool Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <div id="appError" class="appError" hidden></div>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">World Cup pool desk</p>
+          <h1>Find the right entry.</h1>
+          <p class="lede">Choose a day, pick a match, enter the Robinhood prices, and get a buy/skip signal with a stake range. Calendar dates are shown for matches with loaded AI benchmark data.</p>
+        </div>
+        <div class="bankrollBox">
+          <label for="bankroll">Bankroll</label>
+          <div class="moneyInput">
+            <span>$</span>
+            <input id="bankroll" type="number" min="1" step="1" value="50">
+          </div>
+        </div>
+      </section>
+
+      <section class="calendarPanel">
+        <div class="sectionHeader calendarHeader">
+          <div>
+            <p class="eyebrow">Calendar</p>
+            <h2>Pick a match day</h2>
+          </div>
+          <div class="providerStatus">
+            <span id="providerDot" class="providerDot"></span>
+            <strong id="providerText">Connecting ESPN</strong>
+            <small id="refreshText">Auto-refreshes during match days</small>
+            <button id="refreshButton" class="refreshButton" type="button">Refresh now</button>
+          </div>
+        </div>
+        <div id="calendarStrip" class="calendarStrip"></div>
+      </section>
+
+      <section class="matchDayPanel">
+        <div class="sectionHeader compactHeader">
+          <div>
+            <h2 id="dayTitle">Matches</h2>
+            <p id="dayMeta">Select a match to price.</p>
+          </div>
+          <label class="searchBox">
+            <span>Search</span>
+            <input id="matchSearch" autocomplete="off" placeholder="Mexico, Korea, USA...">
+          </label>
+        </div>
+        <div id="matchCards" class="matchCards"></div>
+      </section>
+
+      <section class="matchupPanel">
+        <div class="matchHero">
+          <div class="teamBlock">
+            <span class="crest" id="teamACrest">A</span>
+            <strong id="teamAName">Team A</strong>
+          </div>
+          <div class="scoreBlock">
+            <p id="matchTime">Pregame</p>
+            <h2 id="matchScore">0 - 0</h2>
+            <span id="matchTitle">Select a match</span>
+          </div>
+          <div class="teamBlock right">
+            <span class="crest away" id="teamBCrest">B</span>
+            <strong id="teamBName">Team B</strong>
+          </div>
+        </div>
+
+        <div class="layout">
+          <section class="panel">
+            <div class="sectionHeader">
+              <h2>AI Pregame Probability</h2>
+              <p id="modelMeta">Model picks loaded from WorldCupBenchmark.</p>
+            </div>
+            <div id="probabilityList" class="probabilityList"></div>
+
+            <div class="modeGrid">
+              <label class="radioCard">
+                <input type="radio" name="mode" value="pregame" checked>
+                <span>Pregame</span>
+                <small>Use AI fair prices directly.</small>
+              </label>
+              <label class="radioCard">
+                <input type="radio" name="mode" value="live">
+                <span>Live</span>
+                <small>Trim odds after kickoff.</small>
+              </label>
+            </div>
+
+            <div id="liveFields" class="liveFields" hidden>
+              <label for="minute">Minute</label>
+              <input id="minute" type="number" min="0" max="130" step="1" value="15">
+              <label>Score</label>
+              <div class="scoreInputs">
+                <input id="manualScoreA" type="number" min="0" max="20" step="1" value="0" aria-label="Team A score">
+                <span>-</span>
+                <input id="manualScoreB" type="number" min="0" max="20" step="1" value="0" aria-label="Team B score">
+              </div>
+              <label for="matchRead">Your match read</label>
+              <div class="sliderWrap">
+                <input id="matchRead" type="range" min="-2" max="2" step="1" value="0">
+                <div class="sliderLabels">
+                  <span>AI side poor</span>
+                  <span>Neutral</span>
+                  <span>AI side sharp</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel resultsPanel">
+            <div class="sectionHeader">
+              <h2>Robinhood Prices</h2>
+              <p>Enter contract prices in cents. Example: 37 for 37¢.</p>
+            </div>
+            <div id="priceInputs" class="priceInputs"></div>
+            <div id="signals" class="signals empty">Select a match and enter prices.</div>
+          </section>
+        </div>
+      </section>
+
+      <section class="panel notes">
+        <h2>Logic Guardrails</h2>
+        <p><strong>Buy</strong> appears when Robinhood is cheaper than the adjusted AI fair price by about 3¢. Stake sizing is capped for a $50 learning bankroll.</p>
+        <p><strong>Direct AI picks</strong> come from WorldCupBenchmark. Outcomes no model picked are shown as residual estimates so you can still price either team or the tie.</p>
+        <p><strong>Live mode</strong> uses minute, score, and your slider. Late tied matches heavily reduce win prices and lift the tie, which fixes the 89th-minute favorite problem.</p>
+      </section>
+    </main>
+
+    <script src="predictions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
